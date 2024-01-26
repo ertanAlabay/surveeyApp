@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 
-function Create(question) {
 
-  /*const [task , setTask] = useState([]);
-  const [newTask , setNewTask] = useState("");
-  
-  fun*/
+function Create() {
 
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
@@ -14,6 +11,8 @@ function Create(question) {
   const [showQuestions, setShowQuestions] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   
+  axios.defaults.withCredentials = true;
+
   const addQuestion = () => {
     
     // Yeni soru eklenirken en az bir cevap kontrolü
@@ -53,6 +52,20 @@ function Create(question) {
     // Her yeni soru eklediğimizde 2. kısmı güncelle
     setShowQuestions(true);
   }, [questions]);
+
+  const publishQuestions = () => {
+    // Assuming your backend is running on http://localhost:3001
+    const backendUrl = 'http://localhost:3001/create';
+
+    axios.post(backendUrl, { questions })
+      .then((response) => {
+        alert(response.data.message);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Error publishing questions. Please try again.');
+      });
+  };
 
   return (
     <div className="container mt-4 ">
@@ -114,6 +127,8 @@ function Create(question) {
           )}
         </div>
       </div>
+      
+      <button onClick={publishQuestions}>Publish</button>
     </div>
   );
 };

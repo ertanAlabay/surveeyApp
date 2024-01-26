@@ -43,7 +43,7 @@ function Logout() {
       {
         auth ?
           <div>
-            <h3>Giriş yaptınız {name}</h3>
+            <h3>{name}</h3>
             <button className='btn btn-danger' onClick={handleLogout}>Logout</button>
           </div>
           :

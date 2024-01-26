@@ -22,6 +22,7 @@ export default function PageNavbar() {
                 <Link to="/create" className="nav-link">Create</Link>
                 <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/register" className="nav-link">Register</Link>
+                <Link to="/analyse" className="nav-link">Analyse</Link>
                 <Logout />
               </ul>
             </div>
