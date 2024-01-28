@@ -7,6 +7,8 @@ import Register from './components/pages/Register';
 import Create from './components/pages/Create';
 import Analyse from './components/pages/Analyse';
 import PageNavbar from './components/PageNavbar';
+import Survay from './components/pages/Survay';
+import SurvayAdd from './components/pages/SurvayAdd';
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
         <Route path='/register' element={<Register />}></Route>
         <Route path='/create' element={<Create />}></Route>
         <Route path='/analyse' element={<Analyse />}></Route>
+        <Route path='/survay' element={<Survay />}></Route>
+        <Route path='/survayAdd' element={<SurvayAdd />}></Route>
       </Routes>
     </BrowserRouter>
 

@@ -2,59 +2,36 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Home() {
-  const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
+  const [surveys, setSurveys] = useState([]);
 
   useEffect(() => {
-    fetchQuestions();
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3001/surveys');
+        setSurveys(response.data);
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    }
+    fetchData();
   }, []);
 
-  const fetchQuestions = () => {
-    const backendUrl = 'http://localhost:3001/questions';
-
-    axios.get(backendUrl)
-      .then((response) => {
-        setQuestions(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching questions:', error);
-        setError('Error fetching questions. Please try again.');
-      });
-  };
-/*
-<div className="container mt-4">
-      <h2>Questions</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <ul>
-        {questions.map((question, index) => (
-          <li key={index}>
-            <h3>{question.question}</h3>
-            <ul>
-              {question.options.map((option, optionIndex) => (
-                <li key={optionIndex}>{option.text}</li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </div>
-    */
   return (
     <div className="container mt-4">
-      <h2>Questions</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <ul>
-        {questions.map((question, index) => (
-          <li key={index}>
-            <h3>{question.question}</h3>
-            <ul>
-              {Array.isArray(question.options) && question.options.map((option, optionIndex) => (
-                <li key={optionIndex}>{option.text}</li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
+      {surveys.map((survey) => (
+        <div className="card">
+        <div className="card-body">
+            <div className="card-body" key={survey.id}>
+              <div className="card-body">
+                <h5 className="card-title" >Survey No: {survey.id}</h5>
+                <p className="card-text">Survey Name: {survey.name}</p>
+                <p className="card-text">{survey.explanation}</p>
+                <a href="/survay" className="btn btn-primary">Go Survey</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      ))}
     </div>
   );
 }

@@ -18,10 +18,12 @@ export default function PageNavbar() {
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav">
-                <Link to="/" className="nav-link">Home</Link>
-                <Link to="/create" className="nav-link">Create</Link>
                 <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/register" className="nav-link">Register</Link>
+                <Link to="/" className="nav-link">Home</Link>
+                <Link to="/survay" className="nav-link">Survay</Link>
+                <Link to="/create" className="nav-link">Create</Link>
+                <Link to="/survayAdd" className="nav-link">Survay Add</Link>
                 <Link to="/analyse" className="nav-link">Analyse</Link>
                 <Logout />
               </ul>

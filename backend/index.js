@@ -28,6 +28,38 @@ db.connect((err) => {
   }
 });
 
+app.get('/surveys', (req, res) => {
+  const query = 'SELECT * FROM survay';
+  
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+
+app.post('/addSurvey', (req, res) => {
+  const { name, explanation } = req.body;
+  
+  if (!name || !explanation) {
+    return res.status(400).json({ error: 'Please provide survey name and description.' });
+  }
+  const query = 'INSERT INTO survay (name, explanation) VALUES (?, ?)';
+  
+  db.query(query, [name, explanation], (error) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json({ message: 'Survey added successfully' });
+    }
+  });
+});
+
 app.get('/questions', (req, res) => {
   const query = 'SELECT * FROM questions';
   
@@ -52,7 +84,6 @@ app.get('/questions', (req, res) => {
     }
   });
 });
-
 
 app.post('/create', (req, res) => {
   const { questions } = req.body;
@@ -127,17 +158,14 @@ const verifyUser = (req, res, next) => {
   }
 }
 
-app.get('/', verifyUser, (req, res) => {
-  return res.json({ Status: "Success", name: req.name});
-})
-
-
 app.get('/logout', (req, res) => {
   res.clearCookie('token');
   return res.json({Status: "Success"});
 })
 
-
+app.get('/', verifyUser, (req, res) => {
+  return res.json({ Status: "Success", name: req.name});
+})
 
 app.listen(3001, () => {
   console.log("Running on http://localhost:3001");
