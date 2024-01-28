@@ -30,7 +30,7 @@ db.connect((err) => {
 
 app.get('/surveys', (req, res) => {
   const query = 'SELECT * FROM survay';
-  
+
   db.query(query, (error, results) => {
     if (error) {
       console.error(error);
@@ -44,12 +44,12 @@ app.get('/surveys', (req, res) => {
 
 app.post('/addSurvey', (req, res) => {
   const { name, explanation } = req.body;
-  
+
   if (!name || !explanation) {
     return res.status(400).json({ error: 'Please provide survey name and description.' });
   }
   const query = 'INSERT INTO survay (name, explanation) VALUES (?, ?)';
-  
+
   db.query(query, [name, explanation], (error) => {
     if (error) {
       console.error(error);
@@ -61,16 +61,39 @@ app.post('/addSurvey', (req, res) => {
 });
 
 app.get('/questions', (req, res) => {
-  const query = 'SELECT * FROM questions';
+  /*
+    const { questions, surveyId } = req.body;
+    
+    // Gelen anket ID'si ile ilişkilendirilmiş anket tablosundaki anketi al
+    const getSurveyQuery = 'SELECT * FROM survay WHERE id = ?';
+    
   
+    db.query(query, (error, results) => {
+      /*if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.status(200).json(results);
+      }/
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        // Ensure each question object has an 'options' array
+        const questionsWithOptions = results.map((question) => ({
+          ...question,
+          options: JSON.parse(question.options || '[]'), // Parse options JSON or default to an empty array
+        }));
+        res.status(200).json(questionsWithOptions);
+      }
+    });
+  */
+  const { surveyId } = req.query; // query parametresi olarak surveyId'yi al
 
-  db.query(query, (error, results) => {
-    /*if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.status(200).json(results);
-    }*/
+  // Gelen anket ID'si ile ilişkilendirilmiş soruları al
+  const getQuestionsQuery = 'SELECT * FROM questions WHERE survay_id = ?';
+
+  db.query(getQuestionsQuery, [surveyId], (error, results) => {
     if (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -86,21 +109,48 @@ app.get('/questions', (req, res) => {
 });
 
 app.post('/create', (req, res) => {
-  const { questions } = req.body;
+  const { questions, surveyId } = req.body;
 
-  // Assuming you have a 'questions' table with fields 'question' and 'options'
-  const query = 'INSERT INTO questions ( question, options) VALUES ?';
-  
-  const values = questions.map((q) => [q.question, JSON.stringify(q.options)]);
-
-  db.query(query, [values], (error) => {
-    if (error) {
-      console.error(error);
+  // Gelen anket ID'si ile ilişkilendirilmiş anket tablosundaki anketi al
+  const getSurveyQuery = 'SELECT * FROM survay WHERE id = ?';
+  db.query(getSurveyQuery, [surveyId], (surveyError, surveyResults) => {
+    if (surveyError) {
+      console.error(surveyError);
       res.status(500).json({ error: 'Internal Server Error' });
     } else {
-      res.status(200).json({ message: 'Questions published successfully' });
+      if (surveyResults.length === 0) {
+        res.status(404).json({ error: 'Survey not found' });
+      } else {
+        // İlişkilendirilmiş anket bulundu, şimdi soruları ekleyelim
+        const insertQuestionsQuery = 'INSERT INTO questions (question, options, survay_id) VALUES ?';
+        const values = questions.map((q) => [q.question, JSON.stringify(q.options), surveyId]);
+        db.query(insertQuestionsQuery, [values], (error) => {
+          if (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+          } else {
+            res.status(200).json({ message: 'Questions published successfully' });
+          }
+        });
+      }
     }
   });
+
+  /*
+    // Assuming you have a 'questions' table with fields 'question' and 'options'
+    const query = 'INSERT INTO questions ( question, options) VALUES ?';
+    
+    const values = questions.map((q) => [q.question, JSON.stringify(q.options)]);
+  
+    db.query(query, [values], (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.status(200).json({ message: 'Questions published successfully' });
+      }
+    });
+  */
 });
 
 app.post('/login', (req, res) => { // <-- req ve res sırası düzeltilmiş
@@ -133,25 +183,25 @@ app.post('/register', (req, res) => { // <-- req ve res sırası düzeltilmiş
       return res.json({ Message: "Inserting data error in server" });
     }
     console.log("Kullanıcı başarıyla kaydedildi");
-    return res.json({Status: "Success"});
+    return res.json({ Status: "Success" });
 
-  /*const values = [
-    req.body.email,
-    req.body.password
-  ]*/
+    /*const values = [
+      req.body.email,
+      req.body.password
+    ]*/
   });
 });
- 
+
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
-  if(!token){
+  if (!token) {
     return res.json({ Error: "You are not authenticated." });
   } else {
-    jwt.verify(token, "our-json-web-token-secretkey", (err, decoded) =>{
-      if(err){
+    jwt.verify(token, "our-json-web-token-secretkey", (err, decoded) => {
+      if (err) {
         return res.json({ Error: "Token is not correct" });
       } else {
-        req.name = decoded.name; 
+        req.name = decoded.name;
         next();
       }
     })
@@ -160,11 +210,11 @@ const verifyUser = (req, res, next) => {
 
 app.get('/logout', (req, res) => {
   res.clearCookie('token');
-  return res.json({Status: "Success"});
+  return res.json({ Status: "Success" });
 })
 
 app.get('/', verifyUser, (req, res) => {
-  return res.json({ Status: "Success", name: req.name});
+  return res.json({ Status: "Success", name: req.name });
 })
 
 app.listen(3001, () => {
