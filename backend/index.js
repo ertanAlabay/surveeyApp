@@ -28,6 +28,26 @@ db.connect((err) => {
   }
 });
 
+app.post('/survey-responses', (req, res) => {
+  const { responses } = req.body;
+  
+  if (!responses || Object.keys(responses).length === 0) {
+    return res.status(400).json({ error: 'Survey responses are required.' });
+  }
+
+  const responseValues = Object.entries(responses).map(([questionId, response]) => [questionId, response]);
+  const insertResponseQuery = 'INSERT INTO survey_responses (survey_question_id, response) VALUES ?';
+
+  db.query(insertResponseQuery, [responseValues], (error) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json({ message: 'Survey responses saved successfully' });
+    }
+  });
+});
+
 app.get('/surveys', (req, res) => {
   const query = 'SELECT * FROM survay';
 

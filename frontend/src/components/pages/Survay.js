@@ -1,10 +1,10 @@
 import React from 'react';
 
-function Survay() {
-  
-  return (
+function Survay({props}) {
+
+    return (
     <div className="container mt-4">
-      <h2>Survey Questions</h2>
+      Survay sayfası 
     </div>
   );
 }
