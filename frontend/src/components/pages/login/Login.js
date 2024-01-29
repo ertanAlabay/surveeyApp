@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import '../login/Login.css'
 
 const Login = () => {
   const [values, setValues] = useState({

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom';
-import Logout from "./pages/Logout";
+import Logout from './pages/logout/Logout'
 
 export default function PageNavbar() {
   const location = useLocation();
@@ -21,7 +21,6 @@ export default function PageNavbar() {
                 <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/register" className="nav-link">Register</Link>
                 <Link to="/" className="nav-link">Home</Link>
-                <Link to="/survay" className="nav-link">Survay</Link>
                 <Link to="/create" className="nav-link">Create</Link>
                 <Link to="/survayAdd" className="nav-link">Survay Add</Link>
                 <Link to="/analyse" className="nav-link">Analyse</Link>

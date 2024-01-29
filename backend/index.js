@@ -28,15 +28,28 @@ db.connect((err) => {
   }
 });
 
-app.post('/survey-responses', (req, res) => {
-  const { responses } = req.body;
+app.get('/survey-responses', (req, res) => {
+  const query = 'SELECT * FROM survey_responses';
   
-  if (!responses || Object.keys(responses).length === 0) {
-    return res.status(400).json({ error: 'Survey responses are required.' });
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+app.post('/survey-responses', (req, res) => {
+  const { surveyId, responses } = req.body;
+  
+  if (!surveyId || !responses || Object.keys(responses).length === 0) {
+    return res.status(400).json({ error: 'Survey ID and responses are required.' });
   }
 
-  const responseValues = Object.entries(responses).map(([questionId, response]) => [questionId, response]);
-  const insertResponseQuery = 'INSERT INTO survey_responses (survey_question_id, response) VALUES ?';
+  const responseValues = Object.entries(responses).map(([questionId, response]) => [surveyId, questionId, response]);
+  const insertResponseQuery = 'INSERT INTO survey_responses (survey_id, survey_question_id, response) VALUES ?';
 
   db.query(insertResponseQuery, [responseValues], (error) => {
     if (error) {
@@ -47,6 +60,7 @@ app.post('/survey-responses', (req, res) => {
     }
   });
 });
+
 
 app.get('/surveys', (req, res) => {
   const query = 'SELECT * FROM survay';
@@ -81,33 +95,7 @@ app.post('/addSurvey', (req, res) => {
 });
 
 app.get('/questions', (req, res) => {
-  /*
-    const { questions, surveyId } = req.body;
-    
-    // Gelen anket ID'si ile ilişkilendirilmiş anket tablosundaki anketi al
-    const getSurveyQuery = 'SELECT * FROM survay WHERE id = ?';
-    
   
-    db.query(query, (error, results) => {
-      /*if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.status(200).json(results);
-      }/
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        // Ensure each question object has an 'options' array
-        const questionsWithOptions = results.map((question) => ({
-          ...question,
-          options: JSON.parse(question.options || '[]'), // Parse options JSON or default to an empty array
-        }));
-        res.status(200).json(questionsWithOptions);
-      }
-    });
-  */
   const { surveyId } = req.query; // query parametresi olarak surveyId'yi al
 
   // Gelen anket ID'si ile ilişkilendirilmiş soruları al

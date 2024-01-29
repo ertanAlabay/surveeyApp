@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../home/Home.css'
 
 function Home() {
   const [surveys, setSurveys] = useState([]);
   const [surveyQuestions, setSurveyQuestions] = useState([]);
+  const [surveyId, setSurveyId] = useState(null);
   const [responses, setResponses] = useState({});
 
   useEffect(() => {
@@ -22,8 +24,7 @@ function Home() {
     try {
       const response = await axios.get(`http://localhost:3001/questions?surveyId=${surveyId}`);
       setSurveyQuestions(response.data);
-      // Reset responses when a new survey is clicked
-      setResponses({});
+      setSurveyId(surveyId);
     } catch (error) {
       console.error('An error occurred while fetching survey questions:', error);
     }
@@ -33,15 +34,29 @@ function Home() {
     setResponses({ ...responses, [questionId]: value });
   };
 
-  const handleSaveResponse = async () => {
+  const saveSurveyResponses = async () => {
+    if (!surveyId || Object.keys(responses).length === 0) {
+      console.error('Survey ID and responses are required.');
+      alert('Survey ID and responses are required.');
+      return;
+    }
+
+    // Boş soru bırakılıp bırakılmadığını kontrol et
+    const allQuestionsAnswered = surveyQuestions.every((question) => responses[question.id]);
+    if (!allQuestionsAnswered) {
+      alert('Tüm soruları cevaplayın.');
+      return;
+    }
+
     try {
-      // Send responses to the server to save them in the database
-      const response = await axios.post('http://localhost:3001/survey-responses', { responses });
-      console.log(response.data); // Log the response from the server
-      // Optionally, you can show a success message or redirect the user after saving responses
+      const response = await axios.post('http://localhost:3001/survey-responses', {
+        surveyId: surveyId,
+        responses: responses,
+      });
+      console.log(response.data.message);
+      alert('Survey responses saved successfully');
     } catch (error) {
       console.error('An error occurred while saving survey responses:', error);
-      // Optionally, you can show an error message to the user
     }
   };
 
@@ -67,26 +82,25 @@ function Home() {
           <p>Bu ankette soru bulunmamaktadır.</p>
         ) : (
           <div>
-            {surveyQuestions.map((question) => (
-              <div key={question.id}>
-                <h3>{question.question}</h3>
-                {question.options.map((option) => (
-                  <div key={option.id}>
-                    <label>
+            {surveyQuestions.map((question, index) => (
+              <div key={index}>
+                <h5>Question {index + 1}- {question.question}</h5>
+                <ul>
+                  {question.options.map((option, optionIndex) => (
+                    <div key={optionIndex}>
                       <input
                         type="radio"
                         name={`question-${question.id}`}
-                        value={option.text}
-                        onChange={() => handleResponseChange(question.id, option.text)}
-                        checked={responses[question.id] === option.text}
+                        value={optionIndex}
+                        onChange={(e) => handleResponseChange(question.id, e.target.value)}
                       />
-                      {option.text}
-                    </label>
-                  </div>
-                ))}
+                      <label>{option.text}</label>
+                    </div>
+                  ))}
+                </ul>
               </div>
             ))}
-            <button className="btn btn-primary mt-3" onClick={handleSaveResponse}>Kaydet</button>
+            <button className="btn btn-primary" onClick={saveSurveyResponses}>Kaydet</button>
           </div>
         )}
       </div>

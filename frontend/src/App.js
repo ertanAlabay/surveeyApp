@@ -1,14 +1,13 @@
 
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from "./components/pages/Login"
-import Home from "./components/pages/Home"
-import Register from './components/pages/Register';
-import Create from './components/pages/Create';
-import Analyse from './components/pages/Analyse';
+import Login from "./components/pages/login/Login"
+import Home from "./components/pages/home/Home"
+import Register from './components/pages/register/Register';
+import Create from './components/pages/create/Create';
+import Analyse from './components/pages/analyse/Analyse';
 import PageNavbar from './components/PageNavbar';
-import Survay from './components/pages/Survay';
-import SurvayAdd from './components/pages/SurvayAdd';
+import SurvayAdd from './components/pages/survayCreate/SurvayAdd';
 
 
 function App() {
@@ -21,7 +20,6 @@ function App() {
         <Route path='/register' element={<Register />}></Route>
         <Route path='/create' element={<Create />}></Route>
         <Route path='/analyse' element={<Analyse />}></Route>
-        <Route path='/survay' element={<Survay />}></Route>
         <Route path='/survayAdd' element={<SurvayAdd />}></Route>
       </Routes>
     </BrowserRouter>

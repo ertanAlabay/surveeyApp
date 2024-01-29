@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Axios kütüphanesini kullanarak backend ile iletişim sağlayacağız
-
+import '../survayCreate/SurvayAdd.css'
 
 function SurvayAdd() {
   const [name, setName] = useState('');
