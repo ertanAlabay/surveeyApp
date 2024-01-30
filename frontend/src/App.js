@@ -9,18 +9,17 @@ import Analyse from './components/pages/analyse/Analyse';
 import PageNavbar from './components/PageNavbar';
 import SurvayAdd from './components/pages/survayCreate/SurvayAdd';
 
-
 function App() {
   return (
     <BrowserRouter>
       <PageNavbar />
       <Routes>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/register' element={<Register />}/>
         <Route path='/' element={<Home />}></Route>
-        <Route path='/login' element={<Login />}></Route>
-        <Route path='/register' element={<Register />}></Route>
-        <Route path='/create' element={<Create />}></Route>
-        <Route path='/analyse' element={<Analyse />}></Route>
-        <Route path='/survayAdd' element={<SurvayAdd />}></Route>
+        <Route path='/create' element={<Create />}/>
+        <Route path='/analyse' element={<Analyse />}/>
+        <Route path='/survayAdd' element={<SurvayAdd />}/>
       </Routes>
     </BrowserRouter>
 

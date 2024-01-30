@@ -61,7 +61,6 @@ app.post('/survey-responses', (req, res) => {
   });
 });
 
-
 app.get('/surveys', (req, res) => {
   const query = 'SELECT * FROM survay';
 
@@ -74,7 +73,6 @@ app.get('/surveys', (req, res) => {
     }
   });
 });
-
 
 app.post('/addSurvey', (req, res) => {
   const { name, explanation } = req.body;
@@ -143,22 +141,6 @@ app.post('/create', (req, res) => {
       }
     }
   });
-
-  /*
-    // Assuming you have a 'questions' table with fields 'question' and 'options'
-    const query = 'INSERT INTO questions ( question, options) VALUES ?';
-    
-    const values = questions.map((q) => [q.question, JSON.stringify(q.options)]);
-  
-    db.query(query, [values], (error) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.status(200).json({ message: 'Questions published successfully' });
-      }
-    });
-  */
 });
 
 app.post('/login', (req, res) => { // <-- req ve res sırası düzeltilmiş
@@ -192,11 +174,6 @@ app.post('/register', (req, res) => { // <-- req ve res sırası düzeltilmiş
     }
     console.log("Kullanıcı başarıyla kaydedildi");
     return res.json({ Status: "Success" });
-
-    /*const values = [
-      req.body.email,
-      req.body.password
-    ]*/
   });
 });
 

@@ -71,26 +71,32 @@ function Create() {
       <div className='row alert alert-success border border-dark'>
         <div className="container col-5">
           <div>
+            <h5>Soru Girin</h5>
             <input
               type="text"
+              className='form-control'
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
             />
-            <label> :  Question</label>
+            <h5>Cevap Sayısı Seçin</h5>
             <input
               type="number"
+              className='form-control'
               value={optionCount}
               onChange={(e) => setOptionCount(Math.max(2, parseInt(e.target.value)))}
             />
-            <label> :  Number of Options</label>
+            
             {[...Array(Number(optionCount))].map((_, index) => (
               <div key={index}>
+              <h6>Şık {index + 1}</h6>
                 <input
                   type="text"
+                  className='form-control'
+                  
                   value={options[index]}
                   onChange={(e) => handleOptionChange(index, e.target.value)}
                 />
-                <label> :  Option {index + 1}</label>
+                
               </div>
             ))}
             <button onClick={addQuestion}>Add Question</button>
