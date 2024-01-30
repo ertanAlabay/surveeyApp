@@ -1,8 +1,17 @@
-// components/Login.js
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import '../login/Login.css'
+
+/**
+ * Databasede kayıtlı olan kullanıcıların uygulamaya giriş yapması için oluşturulmuş bir sayfadır.
+ * Uygulama başlangıçta bu sayfaya gelir ve Giriş yapmadıkca uygulamadaki işlemleri gerçekleştiremezsiniz.
+ * İlk defa uygulamaya giriş yaptıysa Kayıt Ol seçeneğinden kayıt olabilir.
+ */
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -15,10 +24,12 @@ const Login = () => {
   axios.defaults.withCredentials = true;
   const handleLogin = (e) => {
     e.preventDefault();
-    // Burada login işlemleri yapılabilir
+
+    // Burada login işlemleri yapılır.
     axios.post('http://localhost:3001/login', values)
       .then(res => {
         if (res.data.Status === "Success") {
+          //response status "Success" ise Anasayfaya yönlendirir.
           navigate('/home');
         } else {
           alert(res.data.Message);

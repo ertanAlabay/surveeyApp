@@ -1,3 +1,6 @@
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
 
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -9,6 +12,12 @@ import Analyse from './components/pages/analyse/Analyse';
 import PageNavbar from './components/navbar/PageNavbar';
 import SurvayAdd from './components/pages/survayCreate/SurvayAdd';
 import PageFooter from './components/footer/PageFooter';
+
+/**
+ * Sayfalar arası geçişi sağlar.
+ * Navbarda bulunan linklerin tanımı burada da yapılır.
+ * Ayrıca 34. satırda uygulama açılışını Login sayfasına yapar.
+ */
 
 function App() {
   return (

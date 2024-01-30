@@ -1,17 +1,31 @@
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../analyse/Analyse.css'
 
+/**
+ * Kullanıcıların çözdüğü anket cevapları ayrı ayrı tablolarda gösterir.
+ * Tablolarda: Tablo ismi, Soru İdsi(sorunun ismini yazdıramadım), 
+ *  cevabı ve soruya verilen toplam cevap sayısını gösterir.
+ */
+
 function Analyse() {
+
   const [surveyData, setSurveyData] = useState([]);
   const [surveys, setSurveys] = useState({});
 
   useEffect(() => {
     async function fetchData() {
       try {
+
+        //survey_responses tablosundaki değerleri alır.
         const surveyResponseResponse = await axios.get('http://localhost:3001/survey-responses');
         setSurveyData(surveyResponseResponse.data);
 
+        //surveys tablosundaki değerleri alır.
         const surveyResponseSurveyResponse = await axios.get('http://localhost:3001/surveys');
         const surveyResponseSurveys = surveyResponseSurveyResponse.data.reduce((acc, survey) => {
           acc[survey.id] = survey.name;
@@ -25,7 +39,7 @@ function Analyse() {
     fetchData();
   }, []);
 
-  // survey_id'leri gruplara ayırma işlemi
+  // survey_id'lere göre soruları gruplara ayırma işlemi yapar.
   const groupedSurveyData = surveyData.reduce((groups, data) => {
     const surveyId = data.survey_id;
     if (!groups[surveyId]) {
@@ -35,7 +49,7 @@ function Analyse() {
     return groups;
   }, {});
 
-  // Her tablodaki aynı soru ve cevaplar için toplam sayıları hesapla
+  // Her tablodaki aynı soru ve cevaplar için toplam sayıları hesaplar.
   const calculateTotalCounts = (responses) => {
     const totalCounts = {};
     responses.forEach((response) => {
@@ -43,7 +57,7 @@ function Analyse() {
       totalCounts[key] = (totalCounts[key] || 0) + 1;
     });
 
-    // Soru ID'lerini büyükten küçüğe sırala
+    // questionId'lerini tabloda sıralı şekilde gösteriyyor.
     const sortedCounts = Object.entries(totalCounts).sort(([keyA], [keyB]) => {
       const questionIdA = keyA.split('_')[0];
       const questionIdB = keyB.split('_')[0];
@@ -53,7 +67,8 @@ function Analyse() {
     return sortedCounts;
   };
 
-  // Harf dönüşüm fonksiyonu
+  // questionId'leri db'den index sayısı olarak alıyorum. 
+  //Burada da bu sayıları harflere dönüştürüyorum.
   const convertToLetter = (num) => {
     return String.fromCharCode(65 + num);
   };
@@ -61,15 +76,14 @@ function Analyse() {
   return (
     <div className="container mt-4">
       {Object.keys(groupedSurveyData).map((surveyId) => (
-       
         <div key={surveyId}>
           <table class="table caption-top mb-4">
-            <caption><h3>Survey Name: {surveys[surveyId]}</h3></caption>
+            <caption><h3>Anket Adı: {surveys[surveyId]}</h3></caption>
             <thead>
               <tr>
-                <th>Survey Question ID</th>
-                <th>Response</th>
-                <th>Total Count</th>
+                <th>Soru Numarası</th>
+                <th>Cevaplar</th>
+                <th>Toplam Cevap Sayısı</th>
               </tr>
             </thead>
             <tbody>

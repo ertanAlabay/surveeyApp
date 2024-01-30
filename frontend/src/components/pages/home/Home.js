@@ -1,6 +1,15 @@
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../home/Home.css'
+
+/**
+ * Uygulamanın anasayfasıdır. 
+ * Burada anketleri ve kısa bir Nasıl kullanırım? metni bulunmaktadır.
+ */
 
 function Home() {
   const [surveys, setSurveys] = useState([]);
@@ -8,6 +17,10 @@ function Home() {
   const [surveyId, setSurveyId] = useState(null);
   const [responses, setResponses] = useState({});
 
+  /**
+   * axios kullanarak sunucudan anketleri çeker ve surveys durumunu günceller. 
+   * bu işlemi sürekli yapar(async).
+   */
   useEffect(() => {
     async function fetchData() {
       try {
@@ -20,6 +33,8 @@ function Home() {
     fetchData();
   }, []);
 
+  //Sayfadaki anketlerde bulunan "Ankete Git" butonunu çalıştırı.
+  // Butona basılınca içerisinde sorular bulunan bir modal formu çıkar.
   const handleSurveyClick = async (surveyId) => {
     try {
       const response = await axios.get(`http://localhost:3001/questions?surveyId=${surveyId}`);
@@ -30,18 +45,19 @@ function Home() {
     }
   };
 
+  //kullanıcının anketi çözerken verdiği cevapları saklar.
   const handleResponseChange = (questionId, value) => {
     setResponses({ ...responses, [questionId]: value });
   };
 
+  //Kaydet butonunu çalıştırı. Tüm şıklar işaretlenmişse uyarı mesajı verir.
   const saveSurveyResponses = async () => {
     if (!surveyId || Object.keys(responses).length === 0) {
       console.error('Survey ID and responses are required.');
-      alert('Survey ID and responses are required.');
+      alert('Lütfen tüm soruları eksiksiz işaretleyiniz.');
       return;
     }
 
-    // Boş soru bırakılıp bırakılmadığını kontrol et
     const allQuestionsAnswered = surveyQuestions.every((question) => responses[question.id]);
     if (!allQuestionsAnswered) {
       alert('Tüm soruları cevaplayın.');
@@ -49,12 +65,13 @@ function Home() {
     }
 
     try {
+      // /survey-responses APIsine post işlemi gerçekleştiri. Verileri db e kaydetmesi için Apıye yollar.
       const response = await axios.post('http://localhost:3001/survey-responses', {
         surveyId: surveyId,
         responses: responses,
       });
       console.log(response.data.message);
-      alert('Survey responses saved successfully');
+      alert('Anket cevapları başarıyla kaydedilmiştir');
     } catch (error) {
       console.error('An error occurred while saving survey responses:', error);
     }
@@ -105,7 +122,7 @@ function Home() {
                     <div>
                       {surveyQuestions.map((question, index) => (
                         <div key={index}>
-                          <h5>Question {index + 1}- {question.question}</h5>
+                          <h5>{index + 1}- {question.question}</h5>
                           <ul>
                             {question.options.map((option, optionIndex) => (
                               <div key={optionIndex}>

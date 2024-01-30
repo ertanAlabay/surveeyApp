@@ -1,6 +1,15 @@
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate  } from 'react-router-dom';
+
+/**
+ * Kullanıcı giriş yaptıktan sonra Navbarda Çıkış Yap butonu gözükür.
+ * Bu butona tıklandığında tekrar Login sayfasına yönlendirilir.
+ */
 
 function Logout() {
   const [auth, setAuth] = useState(false);

@@ -1,8 +1,19 @@
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Create.css'
 
+/**
+ * Burada ankete soru ekleme işlemleri yapılıyor.
+ * Kullanıcı istediği kadar soruyu istediği şık sayısı ile ankete ekleme işlemi yapıyor.
+ */
+
+
 function Create() {
+  
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
   const [optionCount, setOptionCount] = useState(2);
@@ -19,6 +30,8 @@ function Create() {
 
   const fetchSurveys = async () => {
     try {
+
+      //anket değerlerini option formunda göstermek için depğerleri alıyoruz.
       const response = await axios.get('http://localhost:3001/surveys');
       setSurveys(response.data);
     } catch (error) {
@@ -26,11 +39,16 @@ function Create() {
     }
   };
 
+  // Yeni soru ekler
+  // Soru oluşturuken boş cevap girmemeleri için bir kontrol yaptım. boş soru olunca hata veriyor.
+  // Ayrıca en az 2 şık olma zorunluluğu koydum.
   const addQuestion = () => {
     if (!newQuestion || options.every((option) => !option.trim()) || options.length < 2) {
       alert("Lütfen tüm şıkları doldurunuz.");
       return;
     }
+
+    // Oluşturulan soruyu html de gösterebilmek için oluşturdum.
     const newQ = {
       question: newQuestion,
       options: options.map((text) => ({ text, checked: false }))
@@ -43,18 +61,25 @@ function Create() {
     setQuestionCount(questionCount + 1);
   };
 
+  //kullanıcının soru seçeneklerini ve seçeneklerin işaretlerini 
+  //(işaretlenmiş veya işaretlenmemiş) güncellemesine sağlar.
+  //bu kısım kullanışşsız olabilir
   const handleOptionChange = (index, text) => {
     const updatedOptions = [...options];
     updatedOptions[index] = text;
     setOptions(updatedOptions);
   };
 
+  //kullanıcının seçeneklerin işaretlerini 
+  //(işaretlenmiş veya işaretlenmemiş) güncellemesine sağlar.
+  //bu kısım da kullanışşsız olabilir
   const handleCheckboxChange = (questionIndex, optionIndex) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].options[optionIndex].checked = !updatedQuestions[questionIndex].options[optionIndex].checked;
     setQuestions(updatedQuestions);
   };
 
+  // "/create" APIsini çağırır. Eklenen soruları seçilen anketin içerisine databaseye kaydeder.
   const publishQuestions = () => {
     const backendUrl = 'http://localhost:3001/create';
     axios.post(backendUrl, { questions, surveyId: selectedSurvey })
@@ -88,7 +113,8 @@ function Create() {
             />
             {[...Array(Number(optionCount))].map((_, index) => (
               <div key={index}>
-                <h6>Şık {alphabet[index]}</h6> {/* Harfleri göstermek için burada alfabe dizisini kullanıyoruz */}
+              {/* Harfleri göstermek için burada alfabe dizisini kullandım */}
+                <h6>Şık {alphabet[index]}</h6> 
                 <input
                   type="text"
                   className='form-control'
@@ -131,7 +157,8 @@ function Create() {
                           checked={option.checked}
                           onChange={() => handleCheckboxChange(questionIndex, optionIndex)}
                         />
-                        {alphabet[optionIndex]}- {option.text} {/* Harfleri göstermek için burada alfabe dizisini kullanıyoruz */}
+                        {/* Harfleri göstermek için burada alfabe dizisini kullandım */}
+                        {alphabet[optionIndex]}- {option.text} 
                       </div>
                     ))}
                   </ul>

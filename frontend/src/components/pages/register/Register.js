@@ -1,8 +1,16 @@
-// components/Register.js
+/**
+ * Ertan Osman ALABAY - 30.01.2024
+ */
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import '../register/Register.css'
+
+/**
+ * Yeni kayıt yapmak isteyen kullanıcılar bu sayfaya yönlendirilir.
+ * Gerekli bilgiler doldurulduktan sonra Login sayfasına yönlendirilir.
+ */
 
 const Register = () => {
   const [values, setValues] = useState({
@@ -19,6 +27,7 @@ const Register = () => {
     axios.post('http://localhost:3001/register', values)
       .then(res => {
         if (res.data.Status === "Success") {
+          //response status "Success" ise Login sayfasına yönlendirir.
           navigate('/login');
         } else {
           alert(res.data.Message);
