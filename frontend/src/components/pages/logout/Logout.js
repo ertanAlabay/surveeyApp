@@ -1,14 +1,14 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate  } from 'react-router-dom';
 
 function Logout() {
   const [auth, setAuth] = useState(false);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
 
-  const location = useLocation();
   const navigate = useNavigate();
+
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
@@ -21,22 +21,20 @@ function Logout() {
           setAuth(false);
           setMessage(res.data.message);
         }
-      })
-  })
+      });
+  }, []);
 
   const handleLogout = () => {
     axios.get('http://localhost:3001/logout')
       .then(res => {
         if (res.data.Status === "Success") {
-          location.reload(); //?????????????
-          navigate('/login');
+          navigate('/login'); // Yönlendirme işlemi
         } else {
           alert("error");
         }
-
       })
       .catch(err => console.log(err));
-  }
+  };
 
   return (
     <>
@@ -53,7 +51,7 @@ function Logout() {
           </div>
       }
     </>
-  )
+  );
 }
 
-export default Logout
+export default Logout;

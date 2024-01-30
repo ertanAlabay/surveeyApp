@@ -1,0 +1,10 @@
+.page-footer {
+  position: -webkit-sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin-top: 10vh;
+  background-color: #f8f9fa; /* Arka plan rengini istediğiniz gibi ayarlayabilirsiniz */
+  border-top: 1px solid #dee2e6; /* İstenirse üst kenar çizgisini değiştirebilirsiniz */
+}

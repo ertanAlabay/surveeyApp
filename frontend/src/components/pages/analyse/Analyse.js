@@ -61,9 +61,10 @@ function Analyse() {
   return (
     <div className="container mt-4">
       {Object.keys(groupedSurveyData).map((surveyId) => (
+       
         <div key={surveyId}>
-          <h2>Survey Name: {surveys[surveyId]}</h2>
-          <table className="table">
+          <table class="table caption-top mb-4">
+            <caption><h3>Survey Name: {surveys[surveyId]}</h3></caption>
             <thead>
               <tr>
                 <th>Survey Question ID</th>

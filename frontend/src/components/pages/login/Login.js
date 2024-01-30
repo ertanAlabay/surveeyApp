@@ -19,7 +19,7 @@ const Login = () => {
     axios.post('http://localhost:3001/login', values)
       .then(res => {
         if (res.data.Status === "Success") {
-          navigate('/');
+          navigate('/home');
         } else {
           alert(res.data.Message);
         }

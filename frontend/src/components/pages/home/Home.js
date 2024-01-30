@@ -65,7 +65,7 @@ function Home() {
       <div className="container">
         <div className="row">
           <div className='mt-3 mb-4 d-inline' >
-            <h3 className='mb-4'>Nasıl Anket Oluşturabilirim?</h3>
+            <h3 className='mb-4'>Uygulama Nasıl Kullanılmalı?</h3>
             <p>Anasayfada herhangi bir anket bulunmuyorsa şu adımları takip edin:</p>
             <li>"Anket Oluştur" sayfasından yeni bir anket oluşturun.</li>
             <li>"Soru Oluştur" sayfasından istenilen şıkka kadar soruları oluşturup "Ekle" butonu ile listeleyin. İstenilen soru sayısına ulaşınca daha önce oluşturduğumuz anketi seçip "Paylaş" butonuna tıklayın. Anket anasayfada gözükecektir.</li>

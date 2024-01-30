@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../create/Create.css'
+import './Create.css'
 
 function Create() {
   const [questions, setQuestions] = useState([]);
@@ -11,6 +11,7 @@ function Create() {
   const [questionCount, setQuestionCount] = useState(0);
   const [surveys, setSurveys] = useState([]);
   const [selectedSurvey, setSelectedSurvey] = useState('');
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   useEffect(() => {
     fetchSurveys();
@@ -27,7 +28,7 @@ function Create() {
 
   const addQuestion = () => {
     if (!newQuestion || options.every((option) => !option.trim()) || options.length < 2) {
-      alert("Please fill in the question and at least two options.");
+      alert("Lütfen tüm şıkları doldurunuz.");
       return;
     }
     const newQ = {
@@ -62,7 +63,7 @@ function Create() {
       })
       .catch((error) => {
         console.error(error);
-        alert('Error publishing questions. Please try again.');
+        alert('Hata. Lütfen ilgili yerlerin hepsini doldurunuz.');
       });
   };
 
@@ -85,29 +86,33 @@ function Create() {
               value={optionCount}
               onChange={(e) => setOptionCount(Math.max(2, parseInt(e.target.value)))}
             />
-            
             {[...Array(Number(optionCount))].map((_, index) => (
               <div key={index}>
-              <h6>Şık {index + 1}</h6>
+                <h6>Şık {alphabet[index]}</h6> {/* Harfleri göstermek için burada alfabe dizisini kullanıyoruz */}
                 <input
                   type="text"
                   className='form-control'
-                  
                   value={options[index]}
                   onChange={(e) => handleOptionChange(index, e.target.value)}
                 />
-                
               </div>
             ))}
-            <button onClick={addQuestion}>Add Question</button>
-            <label>Choose Survey:</label>
-            <select value={selectedSurvey} onChange={(e) => setSelectedSurvey(e.target.value)}>
-              <option value="">Select a Survey</option>
-              {surveys.map((survey) => (
-                <option key={survey.id} value={survey.id}>{survey.name}</option>
-              ))}
-            </select>
-            <button onClick={publishQuestions}>Publish</button>
+            <button className="btn btn-primary mb-1" onClick={addQuestion}>Soru Ekle</button>
+
+            <div className="input-group">
+              <select className="custom-select"
+                id="inputGroupSelect04"
+                aria-label="Example select with button addon"
+                value={selectedSurvey} onChange={(e) => setSelectedSurvey(e.target.value)}>
+                <option selected>Anket Seç...</option>
+                {surveys.map((survey) => (
+                  <option key={survey.id} value={survey.id}>{survey.name}</option>
+                ))}
+              </select>
+              <div className="input-group-append">
+                <button className="btn btn-primary" type="button" onClick={publishQuestions}>Paylaş</button>
+              </div>
+            </div>
           </div>
         </div>
         <div className="container alert alert-success col-7 mb-0 border border-dark">
@@ -115,21 +120,24 @@ function Create() {
             <div>
               <p>Total Questions: {questionCount}</p>
               {questions.map((q, questionIndex) => (
+                <div>
                 <div key={questionIndex}>
                   <p>{questionIndex + 1}- {q.question}</p>
                   <ul>
                     {q.options.map((option, optionIndex) => (
-                      <li key={optionIndex}>
+                     <div key={optionIndex}>
                         <input
                           type="checkbox"
                           checked={option.checked}
                           onChange={() => handleCheckboxChange(questionIndex, optionIndex)}
                         />
-                        {option.text}
-                      </li>
+                        {alphabet[optionIndex]}- {option.text} {/* Harfleri göstermek için burada alfabe dizisini kullanıyoruz */}
+                      </div>
                     ))}
                   </ul>
                 </div>
+                <p>---------------------------------------</p>
+                </div> 
               ))}
             </div>
           )}
